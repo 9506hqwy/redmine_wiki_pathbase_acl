@@ -1,0 +1,8 @@
+wiki_pathbase_acls_001:
+  project_id: 2
+  user_id:
+  role_id:
+  path: a
+  permission: edit_wiki_pages
+  control: allow
+  order: 1

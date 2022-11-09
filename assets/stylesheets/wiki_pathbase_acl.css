@@ -1,0 +1,20 @@
+#wiki_pathbase_acl table {
+    width: 100%;
+    text-align: left;
+}
+
+#wiki_pathbase_acl table input, select {
+    width: 100%;
+}
+
+#wiki_pathbase_acl tbody tr:first-child button.wiki-acl-up {
+    visibility: hidden;
+}
+
+#wiki_pathbase_acl tbody tr:last-child button.wiki-acl-down {
+    visibility: hidden;
+}
+
+table.wiki-acl-template {
+    display: none;
+}

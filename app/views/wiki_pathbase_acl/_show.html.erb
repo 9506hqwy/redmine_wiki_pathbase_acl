@@ -1,0 +1,159 @@
+<!-- プロジェクト設定のタブ表示 -->
+<%
+  wiki_acls = @project.wiki_acls.order(:order).all
+
+  users = @project.users.where(admin: false).all
+  user_options = users.map {|u| [u.name, "u#{u.id}"]}
+
+  roles = Role.all
+  role_options = roles.map { |r| [r.name, "r#{r.id}"] }
+
+  who_options = {
+    l(:field_user) => user_options,
+    l(:field_role) => role_options,
+  }
+
+  perm_options = [
+    [l(:permission_edit_wiki_pages), 'edit_wiki_pages'],
+  ]
+
+  control_options = [
+    [l(:label_wiki_acl_allow), 'allow'],
+    [l(:label_wiki_acl_deny), 'deny'],
+  ]
+%>
+
+<%= stylesheet_link_tag('wiki_pathbase_acl.css', plugin: :redmine_wiki_pathbase_acl) %>
+
+<%= form_tag({controller: :wiki_pathbase_acl, action: :update, project_id: @project.id},
+             id: 'wiki_pathbase_acl',
+             method: 'PUT') do %>
+
+<div class="box tabular settings">
+  <table>
+    <thead>
+      <tr>
+        <th class="wiki-acl-who"><%= l(:label_wiki_acl_who) %></th>
+        <th class="wiki-acl-path"><%= l(:label_wiki_acl_path) %></th>
+        <th class="wiki-acl-permission"><%= l(:label_wiki_acl_permission) %></th>
+        <th class="wiki-acl-control"><%= l(:label_wiki_acl_control) %></th>
+        <th class="wiki-acl-action"><%= l(:label_wiki_acl_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% wiki_acls.each do |acl| %>
+      <tr>
+        <td class="wiki-acl-who">
+          <% who = acl.user.present? ? "u#{acl.user_id}" : acl.role.present? ? "r#{acl.role_id}" : nil %>
+          <%= select_tag('acls[]who', grouped_options_for_select(who_options, who), include_blank: true) %>
+        </td>
+        <td class="wiki-acl-path">
+          <input name="acls[]path" type="text" value="<%= acl.path %>"/>
+        </td>
+        <td class="wiki-acl-permission">
+          <%= select_tag('acls[]permission', options_for_select(perm_options, acl.permission)) %>
+        </td>
+        <td class="wiki-acl-control">
+          <%= select_tag('acls[]control', options_for_select(control_options, acl.control)) %>
+        </td>
+        <td class="wiki-acl-action">
+          <button class="wiki-acl-up"><%= l(:label_wiki_acl_up) %></button>
+          <button class="wiki-acl-down"><%= l(:label_wiki_acl_down) %></button>
+          <button class="wiki-acl-delete"><%= l(:label_deleted) %></button>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <td><button class="wiki-acl-add"><%= l(:label_added) %></button></td>
+</div>
+
+<p>
+  <%= submit_tag l(:button_save) %>
+</p>
+
+<% end %>
+
+<table class="wiki-acl-template">
+  <tr class="wiki-acl-template">
+    <td class="wiki-acl-who">
+      <%= select_tag('acls[]who', grouped_options_for_select(who_options), include_blank: true) %>
+    </td>
+    <td class="wiki-acl-path">
+      <input name="acls[]path" type="text" value="" />
+    </td>
+    <td class="wiki-acl-permission">
+      <%= select_tag('acls[]permission', options_for_select(perm_options, 'edit_wiki_pages')) %>
+    </td>
+    <td class="wiki-acl-control">
+      <%= select_tag('acls[]control', options_for_select(control_options, 'deny')) %>
+    </td>
+    <td class="wiki-acl-action">
+      <button class="wiki-acl-up"><%= l(:label_wiki_acl_up) %></button>
+      <button class="wiki-acl-down"><%= l(:label_wiki_acl_down) %></button>
+      <button class="wiki-acl-delete"><%= l(:label_deleted) %></button>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  function addWikiAcl(e) {
+    e.preventDefault();
+
+    const template = document.querySelector('tr.wiki-acl-template');
+
+    const row = template.cloneNode(true);
+    row.classList.remove('wiki-acl-template');
+    row.querySelector('.wiki-acl-up').addEventListener('click', upWikiAcl);
+    row.querySelector('.wiki-acl-down').addEventListener('click', downWikiAcl);
+    row.querySelector('.wiki-acl-delete').addEventListener('click', deleteWikiAcl);
+
+    document.querySelector('#wiki_pathbase_acl tbody').appendChild(row);
+  }
+
+  function deleteWikiAcl(e) {
+    e.preventDefault();
+    if (confirm('Delete ?')) {
+      e.target.closest('tr').remove();
+    }
+  }
+
+  function downWikiAcl(e) {
+    e.preventDefault();
+    const row = e.target.closest('tr');
+    const body = row.parentNode;
+    const next = row.nextElementSibling;
+    if (next != null) {
+      row.remove();
+      body.insertBefore(row, next.nextElementSibling);
+    }
+  }
+
+  function upWikiAcl(e) {
+    e.preventDefault();
+    const row = e.target.closest('tr');
+    const body = row.parentNode;
+    const previous = row.previousElementSibling;
+    if (previous != null) {
+      row.remove();
+      body.insertBefore(row, previous);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    for (const row of document.querySelectorAll('.wiki-acl-up')) {
+      row.addEventListener('click', upWikiAcl);
+    }
+
+    for (const row of document.querySelectorAll('.wiki-acl-down')) {
+      row.addEventListener('click', downWikiAcl);
+    }
+
+    for (const row of document.querySelectorAll('.wiki-acl-delete')) {
+      row.addEventListener('click', deleteWikiAcl);
+    }
+
+    document.querySelector('.wiki-acl-add').addEventListener('click', addWikiAcl);
+  });
+</script>

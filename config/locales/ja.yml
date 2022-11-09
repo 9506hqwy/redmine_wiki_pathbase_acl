@@ -1,0 +1,13 @@
+ja:
+  label_wiki_acl_action: 操作
+  label_wiki_acl_allow: 許可
+  label_wiki_acl_control: 制御
+  label_wiki_acl_deny: 拒否
+  label_wiki_acl_down: 下へ
+  label_wiki_acl_path: パス
+  label_wiki_acl_permission: 権限
+  label_wiki_acl_up: 上へ
+  label_wiki_acl_who: 対象
+  permission_edit_wiki_pathbase_acl: Wiki ACLの編集
+  project_module_wiki_pathbase_acl: Wiki ACL
+  wiki_pathbase_acl: Wiki ACL

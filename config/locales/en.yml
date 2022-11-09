@@ -1,0 +1,13 @@
+en:
+  label_wiki_acl_action: Action
+  label_wiki_acl_allow: Allow
+  label_wiki_acl_control: Control
+  label_wiki_acl_deny: Deny
+  label_wiki_acl_down: Down
+  label_wiki_acl_path: Path
+  label_wiki_acl_permission: Permission
+  label_wiki_acl_up: Up
+  label_wiki_acl_who: Who
+  permission_edit_wiki_pathbase_acl: Edit Wiki ACL
+  project_module_wiki_pathbase_acl: Wiki ACL
+  wiki_pathbase_acl: Wiki ACL
