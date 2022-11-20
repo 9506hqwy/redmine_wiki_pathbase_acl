@@ -4,9 +4,11 @@ basedir = File.expand_path('../lib', __FILE__)
 libraries =
   [
     'redmine_wiki_pathbase_acl/utils',
+    'redmine_wiki_pathbase_acl/macro_patch',
     'redmine_wiki_pathbase_acl/projects_helper_patch',
     'redmine_wiki_pathbase_acl/project_patch',
     'redmine_wiki_pathbase_acl/wiki_controller_patch',
+    'redmine_wiki_pathbase_acl/wiki_page_patch',
   ]
 
 libraries.each do |library|

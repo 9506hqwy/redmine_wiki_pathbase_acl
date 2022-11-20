@@ -14,6 +14,7 @@
   }
 
   perm_options = [
+    [l(:permission_view_wiki_pages), 'view_wiki_pages'],
     [l(:permission_edit_wiki_pages), 'edit_wiki_pages'],
   ]
 
@@ -84,7 +85,7 @@
       <input name="acls[]path" type="text" value="" />
     </td>
     <td class="wiki-acl-permission">
-      <%= select_tag('acls[]permission', options_for_select(perm_options, 'edit_wiki_pages')) %>
+      <%= select_tag('acls[]permission', options_for_select(perm_options, 'view_wiki_pages')) %>
     </td>
     <td class="wiki-acl-control">
       <%= select_tag('acls[]control', options_for_select(control_options, 'deny')) %>
