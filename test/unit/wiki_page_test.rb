@@ -3,8 +3,11 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class WikiPageTest < ActiveSupport::TestCase
-  fixtures :users,
+  fixtures :enabled_modules,
+           :projects,
+           :users,
            :wiki_pages,
+           :wikis,
            :wiki_pathbase_acls
 
   def test_visible

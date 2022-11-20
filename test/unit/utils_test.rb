@@ -3,7 +3,8 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class UtilsTest < ActiveSupport::TestCase
-  fixtures :projects,
+  fixtures :enabled_modules,
+           :projects,
            :users,
            :wiki_pages,
            :wikis,
