@@ -40,7 +40,9 @@ module RedmineWikiPathbaseAcl
 end
 
 if ActiveSupport::VERSION::MAJOR >= 5
-  ProjectsHelper.prepend RedmineWikiPathbaseAcl::ProjectsHelperPatch5
+  Rails.application.config.after_initialize do
+    ProjectsController.send(:helper, RedmineWikiPathbaseAcl::ProjectsHelperPatch5)
+  end
 else
   ProjectsHelper.include RedmineWikiPathbaseAcl::ProjectsHelperPatch4
 end
