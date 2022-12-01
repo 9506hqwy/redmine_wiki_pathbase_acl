@@ -22,6 +22,52 @@ class WikiTest < Redmine::IntegrationTest
     Project.find(1).enable_module!(:wiki_pathbase_acl)
   end
 
+  def test_destroy
+    log_user('jsmith', 'jsmith')
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'delete_wiki_pages'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    delete('/projects/ecookbook/wiki/CookBook_documentation/')
+
+    assert_response 403
+
+    acl.control = 'allow'
+    acl.save!
+
+    delete('/projects/ecookbook/wiki/CookBook_documentation/')
+
+    assert_response :success
+  end
+
+  def test_destroy_version
+    log_user('jsmith', 'jsmith')
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'delete_wiki_pages'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    delete('/projects/ecookbook/wiki/CookBook_documentation/1')
+
+    assert_response 403
+
+    acl.control = 'allow'
+    acl.save!
+
+    delete('/projects/ecookbook/wiki/CookBook_documentation/1')
+
+    assert_response 302
+  end
+
   def test_show
     log_user('jsmith', 'jsmith')
 

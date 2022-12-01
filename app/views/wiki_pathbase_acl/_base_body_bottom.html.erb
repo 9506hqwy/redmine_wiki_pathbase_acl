@@ -1,0 +1,20 @@
+<%
+   if controller.present? &&
+      controller.class.name == 'WikiController' &&
+      controller.action_name == 'history'
+%>
+
+<%
+   unless RedmineWikiPathbaseAcl::Utils.permit_page?(@page, User.current, :delete_wiki_pages)
+%>
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteItems = document.querySelectorAll('td.buttons a.icon-del');
+    for (const deleteItem of deleteItems) {
+      deleteItem.style.display = 'none';
+    }
+  });
+</script>
+<% end # unless :delete_wiki_pages %>
+
+<% end # if %>

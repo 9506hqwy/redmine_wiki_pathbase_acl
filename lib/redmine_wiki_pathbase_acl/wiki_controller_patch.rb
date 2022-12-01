@@ -6,8 +6,8 @@ module RedmineWikiPathbaseAcl
       Utils.permit_page?(page, User.current, :edit_wiki_pages)
     end
 
-    def show_wiki_pathbase_acl(&block)
-      unless Utils.permit_page?(@page, User.current, :view_wiki_pages)
+    def wiki_pathbase_acl_process(permission, &block)
+      unless Utils.permit_page?(@page, User.current, permission)
         deny_access
         return
       end
@@ -21,8 +21,22 @@ module RedmineWikiPathbaseAcl
 
     def self.included(base)
       base.class_eval do
+        alias_method_chain(:destroy, :wiki_pathbase_acl)
+        alias_method_chain(:destroy_version, :wiki_pathbase_acl)
         alias_method_chain(:editable?, :wiki_pathbase_acl)
         alias_method_chain(:show, :wiki_pathbase_acl)
+      end
+    end
+
+    def destroy_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:delete_wiki_pages) do
+        destroy_without_wiki_pathbase_acl
+      end
+    end
+
+    def destroy_version_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:delete_wiki_pages) do
+        destroy_version_without_wiki_pathbase_acl
       end
     end
 
@@ -33,7 +47,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def show_with_wiki_pathbase_acl
-      show_wiki_pathbase_acl do
+      wiki_pathbase_acl_process(:view_wiki_pages) do
         show_without_wiki_pathbase_acl
       end
     end
@@ -42,6 +56,18 @@ module RedmineWikiPathbaseAcl
   module WikiControllerPatch5
     include WikiControllerPatch
 
+    def destroy
+      wiki_pathbase_acl_process(:delete_wiki_pages) do
+        super
+      end
+    end
+
+    def destroy_version
+      wiki_pathbase_acl_process(:delete_wiki_pages) do
+        super
+      end
+    end
+
     def editable?(page = @page)
       return false unless editable_wiki_pathbase_acl?(page)
 
@@ -49,7 +75,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def show
-      show_wiki_pathbase_acl do
+      wiki_pathbase_acl_process(:view_wiki_pages) do
         super
       end
     end
