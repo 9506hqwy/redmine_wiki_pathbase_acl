@@ -68,6 +68,26 @@ class WikiTest < Redmine::IntegrationTest
     assert_response 302
   end
 
+  def test_rename
+    log_user('jsmith', 'jsmith')
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/rename')
+
+    assert_response :success
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'rename_wiki_pages'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/rename')
+
+    assert_response 403
+  end
+
   def test_show
     log_user('jsmith', 'jsmith')
 

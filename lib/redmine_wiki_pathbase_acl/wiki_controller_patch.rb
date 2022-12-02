@@ -24,6 +24,7 @@ module RedmineWikiPathbaseAcl
         alias_method_chain(:destroy, :wiki_pathbase_acl)
         alias_method_chain(:destroy_version, :wiki_pathbase_acl)
         alias_method_chain(:editable?, :wiki_pathbase_acl)
+        alias_method_chain(:rename, :wiki_pathbase_acl)
         alias_method_chain(:show, :wiki_pathbase_acl)
       end
     end
@@ -44,6 +45,12 @@ module RedmineWikiPathbaseAcl
       return false unless editable_wiki_pathbase_acl?(page)
 
       editable_without_wiki_pathbase_acl?(page)
+    end
+
+    def rename_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:rename_wiki_pages) do
+        rename_without_wiki_pathbase_acl
+      end
     end
 
     def show_with_wiki_pathbase_acl
@@ -72,6 +79,12 @@ module RedmineWikiPathbaseAcl
       return false unless editable_wiki_pathbase_acl?(page)
 
       super
+    end
+
+    def rename
+      wiki_pathbase_acl_process(:rename_wiki_pages) do
+        super
+      end
     end
 
     def show
