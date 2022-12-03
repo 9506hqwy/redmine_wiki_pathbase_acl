@@ -2,10 +2,6 @@
 
 module RedmineWikiPathbaseAcl
   module WikiControllerPatch
-    def editable_wiki_pathbase_acl?(page)
-      Utils.permit_page?(page, User.current, :edit_wiki_pages)
-    end
-
     def wiki_pathbase_acl_process(permission, &block)
       unless Utils.permit_page?(@page, User.current, permission)
         deny_access
@@ -23,7 +19,6 @@ module RedmineWikiPathbaseAcl
       base.class_eval do
         alias_method_chain(:destroy, :wiki_pathbase_acl)
         alias_method_chain(:destroy_version, :wiki_pathbase_acl)
-        alias_method_chain(:editable?, :wiki_pathbase_acl)
         alias_method_chain(:rename, :wiki_pathbase_acl)
         alias_method_chain(:show, :wiki_pathbase_acl)
       end
@@ -39,12 +34,6 @@ module RedmineWikiPathbaseAcl
       wiki_pathbase_acl_process(:delete_wiki_pages) do
         destroy_version_without_wiki_pathbase_acl
       end
-    end
-
-    def editable_with_wiki_pathbase_acl?(page = @page)
-      return false unless editable_wiki_pathbase_acl?(page)
-
-      editable_without_wiki_pathbase_acl?(page)
     end
 
     def rename_with_wiki_pathbase_acl
@@ -73,12 +62,6 @@ module RedmineWikiPathbaseAcl
       wiki_pathbase_acl_process(:delete_wiki_pages) do
         super
       end
-    end
-
-    def editable?(page = @page)
-      return false unless editable_wiki_pathbase_acl?(page)
-
-      super
     end
 
     def rename

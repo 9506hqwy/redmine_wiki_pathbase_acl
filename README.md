@@ -53,7 +53,6 @@ User2 is allowed to view *wiki/private/user2*, but can not view *private/user1*.
 - Wiki ACL can not overrides role permission that is disabled.
   So user who does not have `Edit wiki pgaes` role permission can not edit any wiki in project.
 - Wiki is listed even if user matches denied Wiki ACL `View wiki`.
-- Currently, `Edit wiki pages` includes permission except view. This will be changed in the future.
 
 ## Tested Environment
 
