@@ -11,8 +11,46 @@ module RedmineWikiPathbaseAcl
       yield
     end
 
+    def wiki_pathbase_acl_new(&block)
+      if request.post? && params[:parent]
+        ppage = @wiki.find_page(params[:parent])
+        unless Utils.permit_page?(ppage, User.current, :edit_wiki_pages)
+          deny_access
+          return
+        end
+      end
+
+      yield
+    end
+
+    def wiki_pathbase_acl_preview(&block)
+      page = @wiki.find_page(params[:id])
+      unless Utils.permit_page?(page, User.current, :edit_wiki_pages)
+        deny_access
+        return
+      end
+
+      yield
+    end
+
     def wiki_pathbase_acl_process(permission, &block)
       unless Utils.permit_page?(@page, User.current, permission)
+        deny_access
+        return
+      end
+
+      yield
+    end
+
+    def wiki_pathbase_acl_update(&block)
+      @page = @wiki.find_or_new_page(params[:id])
+
+      page = @page
+      if @page.new_record? && params[:wiki_page][:parent_id].present?
+        page = @wiki.pages.find(params[:wiki_page][:parent_id])
+      end
+
+      unless Utils.permit_page?(page, User.current, :edit_wiki_pages)
         deny_access
         return
       end
@@ -26,12 +64,23 @@ module RedmineWikiPathbaseAcl
 
     def self.included(base)
       base.class_eval do
+        alias_method_chain(:add_attachment, :wiki_pathbase_acl)
         alias_method_chain(:destroy, :wiki_pathbase_acl)
         alias_method_chain(:destroy_version, :wiki_pathbase_acl)
+        alias_method_chain(:edit, :wiki_pathbase_acl)
         alias_method_chain(:export, :wiki_pathbase_acl)
+        alias_method_chain(:new, :wiki_pathbase_acl)
+        alias_method_chain(:preview, :wiki_pathbase_acl)
         alias_method_chain(:protect, :wiki_pathbase_acl)
         alias_method_chain(:rename, :wiki_pathbase_acl)
         alias_method_chain(:show, :wiki_pathbase_acl)
+        alias_method_chain(:update, :wiki_pathbase_acl)
+      end
+    end
+
+    def add_attachment_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:edit_wiki_pages) do
+        add_attachment_without_wiki_pathbase_acl
       end
     end
 
@@ -47,9 +96,27 @@ module RedmineWikiPathbaseAcl
       end
     end
 
+    def edit_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:edit_wiki_pages) do
+        edit_without_wiki_pathbase_acl
+      end
+    end
+
     def export_with_wiki_pathbase_acl
       wiki_pathbase_acl_check(:view_wiki_pages) do
         export_without_wiki_pathbase_acl
+      end
+    end
+
+    def new_with_wiki_pathbase_acl
+      wiki_pathbase_acl_new do
+        new_without_wiki_pathbase_acl
+      end
+    end
+
+    def preview_with_wiki_pathbase_acl
+      wiki_pathbase_acl_preview do
+        preview_without_wiki_pathbase_acl
       end
     end
 
@@ -70,10 +137,22 @@ module RedmineWikiPathbaseAcl
         show_without_wiki_pathbase_acl
       end
     end
+
+    def update_with_wiki_pathbase_acl
+      wiki_pathbase_acl_update do
+        update_without_wiki_pathbase_acl
+      end
+    end
   end
 
   module WikiControllerPatch5
     include WikiControllerPatch
+
+    def add_attachment
+      wiki_pathbase_acl_process(:edit_wiki_pages) do
+        super
+      end
+    end
 
     def destroy
       wiki_pathbase_acl_process(:delete_wiki_pages) do
@@ -87,8 +166,26 @@ module RedmineWikiPathbaseAcl
       end
     end
 
+    def edit
+      wiki_pathbase_acl_process(:edit_wiki_pages) do
+        super
+      end
+    end
+
     def export
       wiki_pathbase_acl_check(:view_wiki_pages) do
+        super
+      end
+    end
+
+    def new
+      wiki_pathbase_acl_new do
+        super
+      end
+    end
+
+    def preview
+      wiki_pathbase_acl_preview do
         super
       end
     end
@@ -107,6 +204,12 @@ module RedmineWikiPathbaseAcl
 
     def show
       wiki_pathbase_acl_process(:view_wiki_pages) do
+        super
+      end
+    end
+
+    def update
+      wiki_pathbase_acl_update do
         super
       end
     end

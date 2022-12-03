@@ -36,6 +36,7 @@ This plugin provides wiki ACL base on path.
      If `:{user}` in Path, replace to request's user login name.
    - Permission is bellow.
      - Delete wiki pages
+     - Edit wiki pages
      - Protect wiki pages
      - Rename wiki pages
      - View wiki
@@ -56,7 +57,7 @@ User2 is allowed to view *wiki/private/user2*, but can not view *private/user1*.
 
 - Wiki ACL does not affect to system administrator.
 - Wiki ACL can not overrides role permission that is disabled.
-  So user who does not have `Edit wiki pgaes` role permission can not edit any wiki in project.
+  So user who does not have `Edit wiki pages` role permission can not edit any wiki in project.
 - Wiki name is listed on index and date index page even if user matches denied Wiki ACL `View wiki`.
 - Can not export on index and date index page if request matches denied Wiki ACL `View wiki` without Path.
 
