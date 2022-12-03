@@ -14,6 +14,28 @@ class WikiPageTest < ActiveSupport::TestCase
            :wikis,
            :wiki_pathbase_acls
 
+  def test_editable_by
+    user = users(:users_002)
+    page = wiki_pages(:wiki_pages_001)
+
+    assert_equal true, page.editable_by?(user)
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = page.title
+    acl.permission = 'protect_wiki_pages'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    assert_equal false, page.editable_by?(user)
+
+    page.protected = false
+    page.save!
+
+    assert_equal true, page.editable_by?(user)
+  end
+
   def test_visible
     user = users(:users_002)
     page = wiki_pages(:wiki_pages_001)

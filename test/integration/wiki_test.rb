@@ -68,6 +68,26 @@ class WikiTest < Redmine::IntegrationTest
     assert_response 302
   end
 
+  def test_protect
+    log_user('jsmith', 'jsmith')
+
+    post('/projects/ecookbook/wiki/CookBook_documentation/protect?protected=1')
+
+    assert_response 302
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'protect_wiki_pages'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    post('/projects/ecookbook/wiki/CookBook_documentation/protect?protected=0')
+
+    assert_response 403
+  end
+
   def test_rename
     log_user('jsmith', 'jsmith')
 

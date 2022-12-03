@@ -19,6 +19,7 @@ module RedmineWikiPathbaseAcl
       base.class_eval do
         alias_method_chain(:destroy, :wiki_pathbase_acl)
         alias_method_chain(:destroy_version, :wiki_pathbase_acl)
+        alias_method_chain(:protect, :wiki_pathbase_acl)
         alias_method_chain(:rename, :wiki_pathbase_acl)
         alias_method_chain(:show, :wiki_pathbase_acl)
       end
@@ -33,6 +34,12 @@ module RedmineWikiPathbaseAcl
     def destroy_version_with_wiki_pathbase_acl
       wiki_pathbase_acl_process(:delete_wiki_pages) do
         destroy_version_without_wiki_pathbase_acl
+      end
+    end
+
+    def protect_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:protect_wiki_pages) do
+        protect_without_wiki_pathbase_acl
       end
     end
 
@@ -60,6 +67,12 @@ module RedmineWikiPathbaseAcl
 
     def destroy_version
       wiki_pathbase_acl_process(:delete_wiki_pages) do
+        super
+      end
+    end
+
+    def protect
+      wiki_pathbase_acl_process(:protect_wiki_pages) do
         super
       end
     end

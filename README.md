@@ -34,6 +34,11 @@ This plugin provides wiki ACL base on path.
    - Path is wiki name and ancestor wiki names combined with '/'.
      Path is regular expression.
      If `:{user}` in Path, replace to request's user login name.
+   - Permission is bellow.
+     - Delete wiki pages
+     - Protect wiki pages
+     - Rename wiki pages
+     - View wiki
 
 ## Examples
 
