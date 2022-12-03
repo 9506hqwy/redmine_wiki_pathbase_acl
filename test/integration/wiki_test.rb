@@ -68,6 +68,26 @@ class WikiTest < Redmine::IntegrationTest
     assert_response 302
   end
 
+  def test_export
+    log_user('jsmith', 'jsmith')
+
+    get('/projects/ecookbook/wiki/export.html')
+
+    assert_response :success
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'view_wiki_pages'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    get('/projects/ecookbook/wiki/export.html')
+
+    assert_response 403
+  end
+
   def test_protect
     log_user('jsmith', 'jsmith')
 

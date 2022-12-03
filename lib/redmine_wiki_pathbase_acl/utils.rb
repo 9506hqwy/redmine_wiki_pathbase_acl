@@ -8,6 +8,18 @@ module RedmineWikiPathbaseAcl
       Migration = ActiveRecord::Migration
     end
 
+    def self.exist_deny_acl?(project, user, permission)
+      return false if user.admin
+
+      project.wiki_acls.each do |acl|
+        mu = acl.match_user?(user) || acl.match_role?(user)
+        mp = acl.match_permission?(permission)
+        return true if mu && mp && !acl.permit?
+      end
+
+      false
+    end
+
     def self.permit_page?(page, user, permission)
       return true if user.admin
 

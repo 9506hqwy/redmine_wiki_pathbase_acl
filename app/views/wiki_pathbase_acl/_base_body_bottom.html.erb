@@ -18,3 +18,24 @@
 <% end # unless :delete_wiki_pages %>
 
 <% end # if %>
+
+<%
+   if controller.present? &&
+      controller.class.name == 'WikiController' &&
+      ['date_index', 'index'].include?(controller.action_name)
+%>
+
+<%
+   if RedmineWikiPathbaseAcl::Utils.exist_deny_acl?(@project, User.current, :view_wiki_pages)
+%>
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteItems = document.querySelectorAll('p.other-formats');
+    for (const deleteItem of deleteItems) {
+      deleteItem.style.display = 'none';
+    }
+  });
+</script>
+<% end # unless :view_wiki_pages %>
+
+<% end # if %>

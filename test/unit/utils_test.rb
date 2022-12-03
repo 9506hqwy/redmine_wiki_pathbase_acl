@@ -14,6 +14,39 @@ class UtilsTest < ActiveSupport::TestCase
            :wikis,
            :wiki_pathbase_acls
 
+  def test_exist_deny_acl_admin
+    acl = WikiPathbaseAcl.new
+    acl.path = ".+"
+    acl.permission = 'a'
+    acl.control = 'deny'
+    acl.order = 0
+
+    project = projects(:projects_001)
+    project.wiki_acls = [acl]
+
+    user1 = users(:users_001)
+    user2 = users(:users_002)
+
+    assert_equal false, RedmineWikiPathbaseAcl::Utils.exist_deny_acl?(project, user1, :a)
+    assert_equal true, RedmineWikiPathbaseAcl::Utils.exist_deny_acl?(project, user2, :a)
+  end
+
+  def test_exist_deny_acl_match
+    acl = WikiPathbaseAcl.new
+    acl.path = ".+"
+    acl.permission = 'b'
+    acl.control = 'deny'
+    acl.order = 0
+
+    project = projects(:projects_001)
+    project.wiki_acls = [acl]
+
+    user2 = users(:users_002)
+
+    assert_equal false, RedmineWikiPathbaseAcl::Utils.exist_deny_acl?(project, user2, :a)
+    assert_equal true, RedmineWikiPathbaseAcl::Utils.exist_deny_acl?(project, user2, :b)
+  end
+
   def test_permit_page_admin
     acl = WikiPathbaseAcl.new
     acl.path = ".+"
