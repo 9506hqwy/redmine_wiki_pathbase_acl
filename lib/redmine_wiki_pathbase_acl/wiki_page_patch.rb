@@ -2,6 +2,10 @@
 
 module RedmineWikiPathbaseAcl
   module WikiPagePatch
+    def wiki_pathbase_acl_attachments_deletable?(user)
+      Utils.permit_page?(self, user, :delete_wiki_pages_attachments)
+    end
+
     def wiki_pathbase_acl_editable_by?(user)
       !protected? || Utils.permit_page?(self, user, :protect_wiki_pages)
     end
@@ -16,9 +20,16 @@ module RedmineWikiPathbaseAcl
 
     def self.included(base)
       base.class_eval do
+        alias_method_chain(:attachments_deletable?, :wiki_pathbase_acl)
         alias_method_chain(:editable_by?, :wiki_pathbase_acl)
         alias_method_chain(:visible?, :wiki_pathbase_acl)
       end
+    end
+
+    def attachments_deletable_with_wiki_pathbase_acl?(user)
+      return false unless wiki_pathbase_acl_attachments_deletable?(user)
+
+      attachments_deletable_without_wiki_pathbase_acl?(user)
     end
 
     def editable_by_with_wiki_pathbase_acl?(user)
@@ -36,6 +47,12 @@ module RedmineWikiPathbaseAcl
 
   module WikiPagePatch5
     include WikiPagePatch
+
+    def attachments_deletable?(user=User.current)
+      return false unless wiki_pathbase_acl_attachments_deletable?(user)
+
+      super
+    end
 
     def editable_by?(user=User.current)
       return false unless wiki_pathbase_acl_editable_by?(user)

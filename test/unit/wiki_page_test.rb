@@ -3,7 +3,8 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class WikiPageTest < ActiveSupport::TestCase
-  fixtures :enabled_modules,
+  fixtures :attachments,
+           :enabled_modules,
            :enumerations,
            :member_roles,
            :members,
@@ -13,6 +14,27 @@ class WikiPageTest < ActiveSupport::TestCase
            :wiki_pages,
            :wikis,
            :wiki_pathbase_acls
+
+  def setup
+    set_tmp_attachments_directory
+  end
+
+  def test_attachments_deletable
+    user = users(:users_002)
+    page = wiki_pages(:wiki_pages_001)
+
+    assert_equal true, page.attachments_deletable?(user)
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = page.title
+    acl.permission = 'delete_wiki_pages_attachments'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    assert_equal false, page.attachments_deletable?(user)
+  end
 
   def test_editable_by
     user = users(:users_002)
