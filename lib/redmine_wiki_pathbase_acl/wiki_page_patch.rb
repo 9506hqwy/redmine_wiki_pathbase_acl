@@ -10,7 +10,7 @@ module RedmineWikiPathbaseAcl
       !protected? || Utils.permit_page?(self, user, :protect_wiki_pages)
     end
 
-    def visible_wiki_pathbase_acl?(user)
+    def wiki_pathbase_acl_visible?(user)
       Utils.permit_page?(self, user, :view_wiki_pages)
     end
   end
@@ -39,7 +39,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def visible_with_wiki_pathbase_acl?(user=User.current)
-      return false unless visible_wiki_pathbase_acl?(user)
+      return false unless wiki_pathbase_acl_visible?(user)
 
       visible_without_wiki_pathbase_acl?(user)
     end
@@ -61,7 +61,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def visible?(user=User.current)
-      return false unless visible_wiki_pathbase_acl?(user)
+      return false unless wiki_pathbase_acl_visible?(user)
 
       super
     end

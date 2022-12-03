@@ -2,7 +2,7 @@
 
 module RedmineWikiPathbaseAcl
   module MacroPatch
-    def self.include_wiki_pathbase_acl(args, project, &block)
+    def self.wiki_pathbase_acl_include(args, project, &block)
       page = Wiki.find_page(args.first.to_s, :project => project)
       raise 'Access Denied' if page.present? && !Utils.permit_page?(page, User.current, :view_wiki_pages)
 
@@ -18,7 +18,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def macro_include_with_wiki_pathbase_acl(obj, args)
-      MacroPatch.include_wiki_pathbase_acl(args, @project) do
+      MacroPatch.wiki_pathbase_acl_include(args, @project) do
         macro_include_without_wiki_pathbase_acl(obj, args)
       end
     end
@@ -33,7 +33,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def macro_include_with_wiki_pathbase_acl(obj, args)
-      MacroPatch.include_wiki_pathbase_acl(args, @project) do
+      MacroPatch.wiki_pathbase_acl_include(args, @project) do
         macro_include_without_wiki_pathbase_acl(obj, args)
       end
     end
