@@ -21,6 +21,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def self.permit_page?(page, user, permission)
+      return true if page.nil?
       return true if user.admin
 
       path = Utils.wiki_full_path(page)
