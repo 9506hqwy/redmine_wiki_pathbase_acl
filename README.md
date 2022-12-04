@@ -40,6 +40,7 @@ This plugin provides wiki ACL base on path.
      - Protect wiki pages
      - Rename wiki pages
      - View wiki
+     - View wiki history
 
 ## Examples
 
@@ -60,6 +61,7 @@ User2 is allowed to view *wiki/private/user2*, but can not view *private/user1*.
   So user who does not have `Edit wiki pages` role permission can not edit any wiki in project.
 - Wiki name is listed on index and date index page even if user matches denied Wiki ACL `View wiki`.
 - Can not export on index and date index page if request matches denied Wiki ACL `View wiki` without Path.
+- Display wiki history on activity log even if user matches denied Wiki ACL `View wiki history`.
 
 ## Tested Environment
 

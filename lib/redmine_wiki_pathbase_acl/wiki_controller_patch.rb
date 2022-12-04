@@ -42,6 +42,20 @@ module RedmineWikiPathbaseAcl
       yield
     end
 
+    def wiki_pathbase_acl_show(&block)
+      unless Utils.permit_page?(@page, User.current, :view_wiki_pages)
+        deny_access
+        return
+      end
+
+      if params[:version] && !Utils.permit_page?(@page, User.current, :view_wiki_edits)
+        deny_access
+        return
+      end
+
+      yield
+    end
+
     def wiki_pathbase_acl_update(&block)
       @page = @wiki.find_or_new_page(params[:id])
 
@@ -65,10 +79,13 @@ module RedmineWikiPathbaseAcl
     def self.included(base)
       base.class_eval do
         alias_method_chain(:add_attachment, :wiki_pathbase_acl)
+        alias_method_chain(:annotate, :wiki_pathbase_acl)
         alias_method_chain(:destroy, :wiki_pathbase_acl)
         alias_method_chain(:destroy_version, :wiki_pathbase_acl)
+        alias_method_chain(:diff, :wiki_pathbase_acl)
         alias_method_chain(:edit, :wiki_pathbase_acl)
         alias_method_chain(:export, :wiki_pathbase_acl)
+        alias_method_chain(:history, :wiki_pathbase_acl)
         alias_method_chain(:new, :wiki_pathbase_acl)
         alias_method_chain(:preview, :wiki_pathbase_acl)
         alias_method_chain(:protect, :wiki_pathbase_acl)
@@ -84,6 +101,12 @@ module RedmineWikiPathbaseAcl
       end
     end
 
+    def annotate_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:view_wiki_edits) do
+        annotate_without_wiki_pathbase_acl
+      end
+    end
+
     def destroy_with_wiki_pathbase_acl
       wiki_pathbase_acl_process(:delete_wiki_pages) do
         destroy_without_wiki_pathbase_acl
@@ -96,6 +119,12 @@ module RedmineWikiPathbaseAcl
       end
     end
 
+    def diff_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:view_wiki_edits) do
+        diff_without_wiki_pathbase_acl
+      end
+    end
+
     def edit_with_wiki_pathbase_acl
       wiki_pathbase_acl_process(:edit_wiki_pages) do
         edit_without_wiki_pathbase_acl
@@ -105,6 +134,12 @@ module RedmineWikiPathbaseAcl
     def export_with_wiki_pathbase_acl
       wiki_pathbase_acl_check(:view_wiki_pages) do
         export_without_wiki_pathbase_acl
+      end
+    end
+
+    def history_with_wiki_pathbase_acl
+      wiki_pathbase_acl_process(:view_wiki_edits) do
+        history_without_wiki_pathbase_acl
       end
     end
 
@@ -133,7 +168,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def show_with_wiki_pathbase_acl
-      wiki_pathbase_acl_process(:view_wiki_pages) do
+      wiki_pathbase_acl_show do
         show_without_wiki_pathbase_acl
       end
     end
@@ -154,6 +189,12 @@ module RedmineWikiPathbaseAcl
       end
     end
 
+    def annotate
+      wiki_pathbase_acl_process(:view_wiki_edits) do
+        super
+      end
+    end
+
     def destroy
       wiki_pathbase_acl_process(:delete_wiki_pages) do
         super
@@ -166,6 +207,12 @@ module RedmineWikiPathbaseAcl
       end
     end
 
+    def diff
+      wiki_pathbase_acl_process(:view_wiki_edits) do
+        super
+      end
+    end
+
     def edit
       wiki_pathbase_acl_process(:edit_wiki_pages) do
         super
@@ -174,6 +221,12 @@ module RedmineWikiPathbaseAcl
 
     def export
       wiki_pathbase_acl_check(:view_wiki_pages) do
+        super
+      end
+    end
+
+    def history
+      wiki_pathbase_acl_process(:view_wiki_edits) do
         super
       end
     end
@@ -203,7 +256,7 @@ module RedmineWikiPathbaseAcl
     end
 
     def show
-      wiki_pathbase_acl_process(:view_wiki_pages) do
+      wiki_pathbase_acl_show do
         super
       end
     end

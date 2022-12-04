@@ -47,6 +47,26 @@ class WikiTest < Redmine::IntegrationTest
     assert_response 302
   end
 
+  def test_annotate
+    log_user('jsmith', 'jsmith')
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/1/annotate')
+
+    assert_response :success
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'view_wiki_edits'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/1/annotate')
+
+    assert_response 403
+  end
+
   def test_destroy
     log_user('jsmith', 'jsmith')
 
@@ -93,6 +113,26 @@ class WikiTest < Redmine::IntegrationTest
     assert_response 302
   end
 
+  def test_diff
+    log_user('jsmith', 'jsmith')
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/diff?version=2&version_from=1')
+
+    assert_response :success
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'view_wiki_edits'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/diff?version=2&version_from=1')
+
+    assert_response 403
+  end
+
   def test_edit
     log_user('jsmith', 'jsmith')
 
@@ -129,6 +169,26 @@ class WikiTest < Redmine::IntegrationTest
     acl.save!
 
     get('/projects/ecookbook/wiki/export.html')
+
+    assert_response 403
+  end
+
+  def test_history
+    log_user('jsmith', 'jsmith')
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/history')
+
+    assert_response :success
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'view_wiki_edits'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/history')
 
     assert_response 403
   end
@@ -236,6 +296,26 @@ class WikiTest < Redmine::IntegrationTest
     acl.save!
 
     get('/projects/ecookbook/wiki/CookBook_documentation/')
+
+    assert_response 403
+  end
+
+  def test_show_version
+    log_user('jsmith', 'jsmith')
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/1')
+
+    assert_response :success
+
+    acl = WikiPathbaseAcl.new
+    acl.project = Project.find(1)
+    acl.path = 'documentation'
+    acl.permission = 'view_wiki_edits'
+    acl.order = 1
+    acl.control = 'deny'
+    acl.save!
+
+    get('/projects/ecookbook/wiki/CookBook_documentation/1')
 
     assert_response 403
   end
