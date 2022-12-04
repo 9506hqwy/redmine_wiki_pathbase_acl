@@ -20,6 +20,8 @@ class WikiPathbaseAcl < ActiveRecord::Base
   end
 
   def match_permission?(permission)
+    return true if self.permission.to_sym == :all
+
     self.permission.to_sym == permission
   end
 

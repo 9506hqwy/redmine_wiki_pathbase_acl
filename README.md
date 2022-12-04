@@ -41,6 +41,7 @@ This plugin provides wiki ACL base on path.
      - Rename wiki pages
      - View wiki
      - View wiki history
+     - all (includes above permissions)
 
 ## Examples
 
