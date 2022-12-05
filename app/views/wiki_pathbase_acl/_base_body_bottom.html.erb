@@ -1,7 +1,9 @@
 <%
    if controller.present? &&
       controller.class.name == 'WikiController' &&
-      controller.action_name == 'history'
+      controller.action_name == 'history' &&
+      @project &&
+      @project.module_enabled?(:wiki_pathbase_acl)
 %>
 
 <%
@@ -22,7 +24,9 @@
 <%
    if controller.present? &&
       controller.class.name == 'WikiController' &&
-      ['date_index', 'index'].include?(controller.action_name)
+      ['date_index', 'index'].include?(controller.action_name) &&
+      @project &&
+      @project.module_enabled?(:wiki_pathbase_acl)
 %>
 
 <%

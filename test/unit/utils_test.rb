@@ -14,6 +14,10 @@ class UtilsTest < ActiveSupport::TestCase
            :wikis,
            :wiki_pathbase_acls
 
+  def setup
+    Project.find(1).enable_module!(:wiki_pathbase_acl)
+  end
+
   def test_exist_deny_acl_admin
     acl = WikiPathbaseAcl.new
     acl.path = ".+"

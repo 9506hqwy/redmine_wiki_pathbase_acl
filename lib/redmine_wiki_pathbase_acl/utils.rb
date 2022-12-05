@@ -10,6 +10,7 @@ module RedmineWikiPathbaseAcl
 
     def self.exist_deny_acl?(project, user, permission)
       return false if user.admin
+      return false unless project.module_enabled?(:wiki_pathbase_acl)
 
       project.wiki_acls.each do |acl|
         mu = acl.match_user?(user) || acl.match_role?(user)
@@ -23,6 +24,7 @@ module RedmineWikiPathbaseAcl
     def self.permit_page?(page, user, permission)
       return true if page.nil?
       return true if user.admin
+      return true unless page.project.module_enabled?(:wiki_pathbase_acl)
 
       path = Utils.wiki_full_path(page)
 

@@ -17,6 +17,7 @@ class WikiPageTest < ActiveSupport::TestCase
 
   def setup
     set_tmp_attachments_directory
+    Project.find(1).enable_module!(:wiki_pathbase_acl)
   end
 
   def test_attachments_deletable
