@@ -1,10 +1,10 @@
 # Redmine Wiki Path Base Acl
 
-This plugin provides wiki ACL base on path.
+This plugin provides Wiki ACL base on path.
 
 ## Features
 
--  Configure wiki ACL base on path per project.
+-  Configure Wiki ACL base on path per project.
 
 ## Installation
 
@@ -26,14 +26,14 @@ This plugin provides wiki ACL base on path.
 
 2. Set in [Wiki ACL] tab in project setting.
 
-   Configure acl definition per wiki path and role permission.
-   If request match acl definition at first, request is allowed or denied.
-   If request does not match all acl definition, request is allowed.
+   Configure Wiki ACL definition per wiki path and role permission.
+   If request match Wiki ACL definition at first, request is allowed or denied.
+   If request does not match all Wiki ACL definition, request is allowed.
 
    - If Who is empry, all user is match.
    - Path is wiki name and ancestor wiki names combined with '/'.
      Path is regular expression.
-     If `:{user}` in Path, replace to request's user login name.
+     `:{user}` in Path replace request's user login name.
    - Permission is bellow.
      - Delete wiki pages
      - Edit wiki pages
@@ -47,22 +47,24 @@ This plugin provides wiki ACL base on path.
 
 This example provides personal wiki.
 
-| Who  | Path                  | Permission  | Control  |
-| ---- | --------------------- | ----------- | -------- |
-|      | ^wiki/private/:{user} | View wiki   | allow    |
-|      | ^wiki/private/        | View wiki   | deny     |
+| Who  | Path                  | Permission        | Control  |
+| ---- | --------------------- | ----------------- | -------- |
+|      | ^wiki/private/:{user} | all               | allow    |
+|      | ^wiki/private/        | View wiki         | allow    |
+|      | ^wiki/private/        | View wiki history | allow    |
+|      | ^wiki/private/        | all               | deny     |
 
-User1 is allowed to view *wiki/private/user1*, but can not view *private/user2*.
-User2 is allowed to view *wiki/private/user2*, but can not view *private/user1*.
+User1 can manage *wiki/private/user1*, but can view *private/user2*.
+User2 can manage *wiki/private/user2*, but can view *private/user1*.
 
 ## Notes
 
 - Wiki ACL does not affect to system administrator.
 - Wiki ACL can not overrides role permission that is disabled.
-  So user who does not have `Edit wiki pages` role permission can not edit any wiki in project.
-- Wiki name is listed on index and date index page even if user matches denied Wiki ACL `View wiki`.
-- Can not export on index and date index page if request matches denied Wiki ACL `View wiki` without Path.
-- Display wiki history on activity log even if user matches denied Wiki ACL `View wiki history`.
+  Example, user who does not have `Edit wiki pages` role permission can not edit any wiki in project.
+- Wiki name is listed in index and date index page even if user matches denied Wiki ACL `View wiki`.
+- Can not export in index and date index page if request matches denied Wiki ACL `View wiki` without Path.
+- Display wiki history in activity log even if user matches denied Wiki ACL `View wiki history`.
 
 ## Tested Environment
 
