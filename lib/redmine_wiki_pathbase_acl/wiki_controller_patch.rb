@@ -60,7 +60,7 @@ module RedmineWikiPathbaseAcl
       @page = @wiki.find_or_new_page(params[:id])
 
       page = @page
-      if @page.new_record? && params[:wiki_page][:parent_id].present?
+      if @page.new_record? && params[:wiki_page].present? && params[:wiki_page][:parent_id].present?
         page = @wiki.pages.find(params[:wiki_page][:parent_id])
       end
 
