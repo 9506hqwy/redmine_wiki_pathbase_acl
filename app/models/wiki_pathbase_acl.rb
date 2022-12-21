@@ -14,7 +14,7 @@ class WikiPathbaseAcl < ActiveRecord::Base
   end
 
   def match_path?(path, user)
-    pattern = self.path.gsub(':{user}', user.login)
+    pattern = self.path.gsub(':{user}', Regexp.escape(user.login))
     reg = Regexp.compile(pattern, Regexp::IGNORECASE)
     reg.match(path).present?
   end
