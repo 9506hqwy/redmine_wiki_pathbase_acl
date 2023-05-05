@@ -52,16 +52,16 @@
       <tr>
         <td class="wiki-acl-who">
           <% who = acl.user.present? ? "u#{acl.user_id}" : acl.role.present? ? "r#{acl.role_id}" : nil %>
-          <%= select_tag('acls[]who', grouped_options_for_select(who_options, who), include_blank: true) %>
+          <%= select_tag('acls[]who', grouped_options_for_select(who_options, who), include_blank: true, id: nil) %>
         </td>
         <td class="wiki-acl-path">
           <input name="acls[]path" type="text" value="<%= acl.path %>"/>
         </td>
         <td class="wiki-acl-permission">
-          <%= select_tag('acls[]permission', options_for_select(perm_options, acl.permission)) %>
+          <%= select_tag('acls[]permission', options_for_select(perm_options, acl.permission), id: nil) %>
         </td>
         <td class="wiki-acl-control">
-          <%= select_tag('acls[]control', options_for_select(control_options, acl.control)) %>
+          <%= select_tag('acls[]control', options_for_select(control_options, acl.control), id: nil) %>
         </td>
         <td class="wiki-acl-action">
           <button class="wiki-acl-up"><%= l(:label_wiki_acl_up) %></button>
@@ -85,16 +85,16 @@
 <table class="wiki-acl-template">
   <tr class="wiki-acl-template">
     <td class="wiki-acl-who">
-      <%= select_tag('acls[]who', grouped_options_for_select(who_options), include_blank: true) %>
+      <%= select_tag('acls[]who', grouped_options_for_select(who_options), include_blank: true, id: nil) %>
     </td>
     <td class="wiki-acl-path">
       <input name="acls[]path" type="text" value="" />
     </td>
     <td class="wiki-acl-permission">
-      <%= select_tag('acls[]permission', options_for_select(perm_options, 'view_wiki_pages')) %>
+      <%= select_tag('acls[]permission', options_for_select(perm_options, 'view_wiki_pages'), id: nil) %>
     </td>
     <td class="wiki-acl-control">
-      <%= select_tag('acls[]control', options_for_select(control_options, 'deny')) %>
+      <%= select_tag('acls[]control', options_for_select(control_options, 'deny'), id: nil) %>
     </td>
     <td class="wiki-acl-action">
       <button class="wiki-acl-up"><%= l(:label_wiki_acl_up) %></button>
