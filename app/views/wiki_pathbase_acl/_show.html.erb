@@ -3,10 +3,10 @@
   wiki_acls = @project.wiki_acls.order(:order).all
 
   users = @project.users.where(admin: false).all
-  user_options = users.map {|u| [u.name, "u#{u.id}"]}
+  user_options = users.sort_by {|u| u.name}.map {|u| [u.name, "u#{u.id}"]}
 
   roles = Role.all
-  role_options = roles.map { |r| [r.name, "r#{r.id}"] }
+  role_options = roles.sort_by {|r| r.name}.map {|r| [r.name, "r#{r.id}"]}
 
   who_options = {
     l(:field_user) => user_options,
