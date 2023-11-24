@@ -74,6 +74,7 @@ User2 can manage *wiki/private/user2*, but can view *private/user1*.
   * 4.1
   * 4.2
   * 5.0
+  * 5.1
 * Database
   * SQLite
   * MySQL 5.7
