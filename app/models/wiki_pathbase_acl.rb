@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WikiPathbaseAcl < ActiveRecord::Base
+class WikiPathbaseAcl < RedmineWikiPathbaseAcl::Utils::ModelBase
   belongs_to :project
   belongs_to :user
   belongs_to :role

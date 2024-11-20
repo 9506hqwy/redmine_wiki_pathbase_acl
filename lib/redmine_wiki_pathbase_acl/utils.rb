@@ -8,6 +8,13 @@ module RedmineWikiPathbaseAcl
       Migration = ActiveRecord::Migration
     end
 
+    if defined?(ApplicationRecord)
+      # https://www.redmine.org/issues/38975
+      ModelBase = ApplicationRecord
+    else
+      ModelBase = ActiveRecord::Base
+    end
+
     def self.exist_deny_acl?(project, user, permission)
       return false if user.admin
       return false unless project.module_enabled?(:wiki_pathbase_acl)
